@@ -1,0 +1,9 @@
+## Interface: 11100
+## Title: Stance Swap
+## Notes: 123 test 321
+## LoadOnDemand: 0
+## Author: bugRanger
+## eMail: departmentofjusticeevil@gmail.com
+
+# main
+StanceSwap.lua
