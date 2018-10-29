@@ -1,22 +1,21 @@
 local gStance={"Battle Stance","Defensive Stance","Berserker Stance"}
 local addons = "StanceSwap"
 
+-- Create inf message
 local function Message(text)
 	DEFAULT_CHAT_FRAME:AddMessage(addons .. ": " .. text);
 end
 
-Message("Hello!")
+Message("Load!")
 
+--???:
 function stsw(stActive,stEvent,stReturn)
 	StanceSwap(stActive,stEvent,stReturn);
 end
+--???:
 function stev(stSpell)
 	return pcall(CastSpellByName,stSpell);
 end
-function StanceSwap(stSwap,stSpell,stReturn)
-	StanceSwapEv(stSwap, stev(stSpell), stReturn)
-end
-
 --???:
 function spcd(slot)
 	local start,_,_ = GetActionCooldown(slot)
@@ -59,9 +58,10 @@ local function SwapStanceEx(stSwap)
 		if not _act then 
 			-- Activation stance
 			SpellStopCasting()CastSpellByName(name)
+			return false;
 		end;
 		-- Return state.
-		return (s == 0)
+		return (s == 0);
 	end;
 end;
 --???:
@@ -77,19 +77,19 @@ function StanceSwapEv(stSwap,stEvent,stReturn)
 		return;
 	end;	
 	-- Get cast name
-	local cast = stEvent();
-	if cast == nil or cast == "" then
-		Message("ERROR! Event not return cast name!");
+	local casts = stEvent();
+	if casts == nil or next(casts) == nil or casts[1] == nil then
+		-- Message("ERROR! Event not return cast name!");
 		return;
 	end;	
 	-- Find non active stance
-	local ready = SwapStanceEx(stSwap);	
+	local ready = SwapStanceEx(stSwap);		
 	-- Check event is not nil and ready state
 	if stReturn == nil or not ready then return else 		
 		-- Cast result.
 		local result = false;		
 		-- Get inf stance
-		s,_,_ = GetShapeshiftFormCooldown(stReturn);
+		s,_,_ = GetShapeshiftFormCooldown(stReturn);		
 		-- Find spell inf from book
 		for i = 1, MAX_SKILLLINE_TABS do
 			-- Get inf spell
@@ -97,27 +97,30 @@ function StanceSwapEv(stSwap,stEvent,stReturn)
 			-- Slot spell
 			for slotID = offset + 1, offset + numSpells do						
 				-- Get name spell slot
-				local spell,_ = GetSpellName(slotID, BOOKTYPE_SPELL);
+				local spell,_ = GetSpellName(slotID, BOOKTYPE_SPELL);					
 				-- Check
-				if spell == cast then
+				if spell == casts[1] then
 					-- Get spell ready
 					st,_,_ = GetSpellCooldown(slotID, BOOKTYPE_SPELL);
 					-- Check ready
 					if s > 0 or st > 0 then 
+						Message("exit");
 						return 
 					else
 						-- Attempt cast
-						result = pcall(CastSpellByName, cast);
+						result = pcall(CastSpellByName, casts[1]);
+												
 						-- Check
-						if result then
+						if result then							
 							-- Return stance
 							SwapStanceEx({stReturn});
+							SpellStopCasting();
+							CastSpellByName(casts[2]);							
 						end;
-					end					
-					-- Return result
-					return result;
+					end
+					-- return result;
 				end
 			end
-		end
+		end		
 	end 
 end
