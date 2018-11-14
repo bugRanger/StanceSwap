@@ -1,43 +1,56 @@
+local gDebug = false;
+local gStance={"Battle Stance", "Defensive Stance", "Berserker Stance"}
+local gAddons = "StanceSwap"
+
+local function Trace(text)
+	-- if gDebug == true then
+	-- 	print(gAddons .. ": " .. text);
+	-- end
+	DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+end
+local function Message(text)
+	-- print(gAddons .. ": " .. text);
+	DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+end
+
 -- ANI.MOCK> Исп. методы API.
 -- Получить информацию о восстановление действия.
 -- local function GetActionCooldown(slotID)
-	-- local start = 0;
-	-- return start,0,0;
+-- 	local start = 0;
+-- 	return start,0,0;
 -- end;
 -- -- Получить информацию о дистанции действия.
 -- local function IsActionInRange(slotID)
-	-- return 1;
+-- 	return 1;
 -- end;
 -- -- Получить информацию о ресурсе действия.
 -- local function IsUsableAction(slotID)
-	-- return 1, nil;
+-- 	return 1, nil;
 -- end;
 -- -- Прервать выполнение действия.
 -- local function SpellStopCasting()
+-- 	Trace('Act: Stop casting');
 -- end;
 -- -- Выполнить действие.
 -- local function UseAction(slotID)
+-- 	Trace('Act: Use slot number by ['..slotID..']');
 -- end;
 -- -- Выполнить заклинание.
 -- local function CastSpellByName(name)
+-- 	Trace('Act: Cast spell by ['..name..']');
 -- end;
 -- -- Выполнить заклинание.
 -- local function GetShapeshiftFormInfo(stanceID)
-	-- local act = true;
-	-- return 0,0,act,0;
+-- 	local act = stanceID == 2;
+-- 	Trace('Active: [StanceID{' .. stanceID .. '}] = ' .. tostring(act))
+-- 	return 0,0,act,0;
 -- end;
 -- -- Выполнить заклинание.
 -- local function GetShapeshiftFormCooldown(stanceID)
-	-- local start = 0;
-	-- return start,0,0;
+-- 	local start = 0;
+-- 	return start,0,0;
 -- end;
 -- ANI.MOCK<
-local gStance={"Battle Stance","Defensive Stance","Berserker Stance"}
-local addons = "StanceSwap"
-
-local function Message(text)
-	DEFAULT_CHAT_FRAME:AddMessage(addons .. ": " .. text);
-end
 
 Message("Loaded!");
 
@@ -86,9 +99,13 @@ local function SetStance(stances, before, after)
 		-- Поиск акт. стоек.
 		function(stanceID)
 			-- Получаем информацию о стойке.
-			local _,_,_act,_ GetShapeshiftFormInfo(stanceID);
+			local _,_,_act,_ = GetShapeshiftFormInfo(stanceID);
+			-- Инф. отладки.
+			Trace('Active: ['..gStance[stanceID]..'] = '..tostring(_act));
 			return _act;
 		end);
+	-- Инф. отладки.
+	Trace('Stance: ['..tostring(name)..']');
 	-- Если акт. стоек нет, берем приоритетную.
 	if stanceID == nil then
 		stanceID, name = GetContains({stances[1]});
@@ -225,3 +242,4 @@ function StanceSwaped(inStances,inBefore,inAfter,outStance,outBefore,outAfter)
 		end;
 	end
 end
+-- ssp({1,2},nil,{[14]=2})
