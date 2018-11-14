@@ -5,58 +5,58 @@ local gAddons = "StanceSwap"
 
 local function Trace(text)
 	if gDebug == true then
-		print(gAddons .. ": " .. text);
-		--DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+		-- print(gAddons .. ": " .. text);
+		DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
 	end
 end
 local function Message(text)
-	print(gAddons .. ": " .. text);
-	--DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+	-- print(gAddons .. ": " .. text);
+	DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
 end
 
 -- ANI.MOCK> Исп. методы API.
-local time = 60123.558;
--- Получить время в секундах.
-local function GetTime()
-	time = time + 0.005;
-	return time;
-end
--- Получить информацию о восстановление действия.
-local function GetActionCooldown(slotID)
-	local start = 0;
-	return start,0,0;
-end;
--- Получить информацию о дистанции действия.
-local function IsActionInRange(slotID)
-	return 1;
-end;
--- Получить информацию о ресурсе действия.
-local function IsUsableAction(slotID)
-	return 1, nil;
-end;
--- Прервать выполнение действия.
-local function SpellStopCasting()
-	Trace('Act: Stop casting');
-end;
--- Выполнить действие.
-local function UseAction(slotID)
-	Trace('Act: Use slot number by ['..slotID..']');
-end;
--- Выполнить заклинание.
-local function CastSpellByName(name)
-	Trace('Act: Cast spell by ['..name..']');
-end;
--- Выполнить заклинание.
-local function GetShapeshiftFormInfo(stanceID)
-	local act = stanceID == 3;
-	Trace('Active: [StanceID{' .. stanceID .. '}] = ' .. tostring(act))
-	return 0,0,act,0;
-end;
--- Выполнить заклинание.
-local function GetShapeshiftFormCooldown(stanceID)
-	local start = 0;
-	return start,0,0;
-end;
+-- local time = 60123.558;
+-- -- Получить время в секундах.
+-- local function GetTime()
+-- 	time = time + 0.005;
+-- 	return time;
+-- end
+-- -- Получить информацию о восстановление действия.
+-- local function GetActionCooldown(slotID)
+-- 	local start = 0;
+-- 	return start,0,0;
+-- end;
+-- -- Получить информацию о дистанции действия.
+-- local function IsActionInRange(slotID)
+-- 	return 1;
+-- end;
+-- -- Получить информацию о ресурсе действия.
+-- local function IsUsableAction(slotID)
+-- 	return 1, nil;
+-- end;
+-- -- Прервать выполнение действия.
+-- local function SpellStopCasting()
+-- 	Trace('Act: Stop casting');
+-- end;
+-- -- Выполнить действие.
+-- local function UseAction(slotID)
+-- 	Trace('Act: Use slot number by ['..slotID..']');
+-- end;
+-- -- Выполнить заклинание.
+-- local function CastSpellByName(name)
+-- 	Trace('Act: Cast spell by ['..name..']');
+-- end;
+-- -- Выполнить заклинание.
+-- local function GetShapeshiftFormInfo(stanceID)
+-- 	local act = stanceID == 3;
+-- 	Trace('Active: [StanceID{' .. stanceID .. '}] = ' .. tostring(act))
+-- 	return 0,0,act,0;
+-- end;
+-- -- Выполнить заклинание.
+-- local function GetShapeshiftFormCooldown(stanceID)
+-- 	local start = 0;
+-- 	return start,0,0;
+-- end;
 -- ANI.MOCK<
 
 Message("Loaded!");
@@ -293,4 +293,4 @@ function StanceSwaped(inStances,inBefore,inAfter,outStance,outBefore,outAfter)
 		end;
 	end
 end
-ssp({1,2},nil,{[14]=2})
+-- ssp({1,2},nil,{[14]=2})
