@@ -3,10 +3,10 @@ local gStance={"Battle Stance", "Defensive Stance", "Berserker Stance"}
 local gAddons = "StanceSwap"
 
 local function Trace(text)
-	-- if gDebug == true then
+	if gDebug == true then
 	-- 	print(gAddons .. ": " .. text);
-	-- end
-	DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+		DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+	end
 end
 local function Message(text)
 	-- print(gAddons .. ": " .. text);
