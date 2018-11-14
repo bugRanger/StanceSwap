@@ -1,55 +1,62 @@
 local gDebug = false;
+local gDelay = 0.125;
 local gStance={"Battle Stance", "Defensive Stance", "Berserker Stance"}
 local gAddons = "StanceSwap"
 
 local function Trace(text)
 	if gDebug == true then
-	-- 	print(gAddons .. ": " .. text);
-		DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+		print(gAddons .. ": " .. text);
+		--DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
 	end
 end
 local function Message(text)
-	-- print(gAddons .. ": " .. text);
-	DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
+	print(gAddons .. ": " .. text);
+	--DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
 end
 
 -- ANI.MOCK> Исп. методы API.
+local time = 60123.558;
+-- Получить время в секундах.
+local function GetTime()
+	time = time + 0.005;
+	return time;
+end
 -- Получить информацию о восстановление действия.
--- local function GetActionCooldown(slotID)
--- 	local start = 0;
--- 	return start,0,0;
--- end;
--- -- Получить информацию о дистанции действия.
--- local function IsActionInRange(slotID)
--- 	return 1;
--- end;
--- -- Получить информацию о ресурсе действия.
--- local function IsUsableAction(slotID)
--- 	return 1, nil;
--- end;
--- -- Прервать выполнение действия.
--- local function SpellStopCasting()
--- 	Trace('Act: Stop casting');
--- end;
--- -- Выполнить действие.
--- local function UseAction(slotID)
--- 	Trace('Act: Use slot number by ['..slotID..']');
--- end;
--- -- Выполнить заклинание.
--- local function CastSpellByName(name)
--- 	Trace('Act: Cast spell by ['..name..']');
--- end;
--- -- Выполнить заклинание.
--- local function GetShapeshiftFormInfo(stanceID)
--- 	local act = stanceID == 2;
--- 	Trace('Active: [StanceID{' .. stanceID .. '}] = ' .. tostring(act))
--- 	return 0,0,act,0;
--- end;
--- -- Выполнить заклинание.
--- local function GetShapeshiftFormCooldown(stanceID)
--- 	local start = 0;
--- 	return start,0,0;
--- end;
+local function GetActionCooldown(slotID)
+	local start = 0;
+	return start,0,0;
+end;
+-- Получить информацию о дистанции действия.
+local function IsActionInRange(slotID)
+	return 1;
+end;
+-- Получить информацию о ресурсе действия.
+local function IsUsableAction(slotID)
+	return 1, nil;
+end;
+-- Прервать выполнение действия.
+local function SpellStopCasting()
+	Trace('Act: Stop casting');
+end;
+-- Выполнить действие.
+local function UseAction(slotID)
+	Trace('Act: Use slot number by ['..slotID..']');
+end;
+-- Выполнить заклинание.
+local function CastSpellByName(name)
+	Trace('Act: Cast spell by ['..name..']');
+end;
+-- Выполнить заклинание.
+local function GetShapeshiftFormInfo(stanceID)
+	local act = stanceID == 3;
+	Trace('Active: [StanceID{' .. stanceID .. '}] = ' .. tostring(act))
+	return 0,0,act,0;
+end;
+-- Выполнить заклинание.
+local function GetShapeshiftFormCooldown(stanceID)
+	local start = 0;
+	return start,0,0;
+end;
 -- ANI.MOCK<
 
 Message("Loaded!");
@@ -66,6 +73,50 @@ function actrng(slotID)
 	local inRange = IsActionInRange(slotID)
 	return (inRange == 1);
 end
+
+-- Выполнить способность.
+-- > name - Наименование способности.
+function CastName(name)
+	SpellStopCasting();CastSpellByName(name);
+end;
+-- Задействовать слот.
+-- > slotID - Номер слота действия на панели.
+function UseID(slotID)
+	SpellStopCasting();UseAction(slotID);
+end;
+
+-- Создать задержку.
+-- > delay - Интервал задержки.
+function WaitDelay(delay)
+	Trace('Delay: Start!')
+	if delay == nil or delay < 0 then
+		Trace('Delay: Is bad value - ' ..tostring(delay));
+		return;
+	end
+	Trace('Delay: Wait - '..tostring(delay));
+	local watch = GetTime() + delay;
+	while (watch > GetTime()) do
+		if watch <= GetTime() then
+			break;
+		end
+	end
+	Trace('Delay: Success!');
+end
+-- Выполнить способность с интервалом.
+-- > name - Наименование способности.
+-- > delay - Интервал задержки.
+function DelayCastName(name, delay)
+	WaitDelay(delay);
+	CastName(name);
+end;
+-- Задействовать слот с интервалом.
+-- > slotID - Номер слота действия на панели.
+-- > delay - Интервал задержки.
+function DelayUseID(slotID, delay)
+	WaitDelay(delay);
+	UseID(slotID);
+end;
+
 -- Проверка на возможность использовать.
 -- > slotID - Номер слота действия на панели.
 -- > resource - флаг проверки наличия ресурсов для выполнения.
@@ -122,7 +173,7 @@ local function SetStance(stances, before, after)
 				before();
 			end 
 			-- Выполняем.
-			SpellStopCasting()CastSpellByName(name);
+			CastName(name);
 		end
 		-- Выполняем действия ПОСЛЕ.
 		if after ~= nil then
@@ -209,15 +260,15 @@ function StanceSwaped(inStances,inBefore,inAfter,outStance,outBefore,outAfter)
 		if not SetStance(inStances,
 			function()
 				if inBefore ~= nil and next(inBefore) ~= nil then
-					for act,_ in pairs(inBefore) do
-						SpellStopCasting()UseAction(act);
+					for act,_ in pairs(inBefore) do						
+						DelayUseID(act, gDelay);
 					end
 				end
 			end,
 			function()
 				if inAfter ~= nil and next(inAfter) ~= nil then
 					for act,_ in pairs(inAfter) do
-						SpellStopCasting()UseAction(act);
+						DelayUseID(act, gDelay);
 					end;
 				end;
 			end) 
@@ -228,18 +279,18 @@ function StanceSwaped(inStances,inBefore,inAfter,outStance,outBefore,outAfter)
 					if outBefore ~= nil and next(outBefore) ~= nil 
 					then
 						for act,_ in pairs(outBefore) do
-							SpellStopCasting()UseAction(act);
+							DelayUseID(act, gDelay);
 						 end;
 					end;
 				end,
 				function()
 					if outAfter ~= nil and next(outAfter) ~= nil then
 						for act,_ in pairs(outAfter) do
-							SpellStopCasting()UseAction(act);
+							DelayUseID(act, gDelay);
 						end
 					end;
 				end);
 		end;
 	end
 end
--- ssp({1,2},nil,{[14]=2})
+ssp({1,2},nil,{[14]=2})
