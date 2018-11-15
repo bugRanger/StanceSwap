@@ -14,7 +14,7 @@ local function Message(text)
 	DEFAULT_CHAT_FRAME:AddMessage(gAddons .. ": " .. text);
 end
 
--- ANI.MOCK> Исп. методы API.
+-- MOCK> Исп. методы API.
 -- local time = 60123.558;
 -- -- Получить время в секундах.
 -- local function GetTime()
